@@ -168,7 +168,15 @@ phone_selector ="#hostInfo > li.host_phone"
 
 
 #%%
-temp_data = pd.DataFrame()
+#csv파일이 존재하는지 확인
+'''
+if op.path.exists(os.getcwd + "/data/data.csv"):
+    pd.read(os.getcwd() + '/data/data.csv')
+else:
+
+'''  
+    
+
 
 name_list = []
 limitation_list = []
@@ -177,10 +185,13 @@ date_list = []
 title_list = []
 email_list = []
 phone_list = []
+url_list = []
 for i in target_URL:
     
     #타겟 URL지정해서 get
     driver.get(base_URL+i)
+    url_list.append(base_URL+i)
+
 
     #get 타겟 페이지
     target_html = driver.page_source
@@ -219,7 +230,7 @@ for i in target_URL:
 
 #%%
 
-data = pd.DataFrame({'이름':name_list, '연락처':phone_list, '이메일':email_list, '제목':title_list, '장소':date_list, '시간':date_list, '인원제한':limitation_list})
+data = pd.DataFrame({'이름':name_list, '연락처':phone_list, '이메일':email_list, '제목':title_list, '장소':date_list, '시간':date_list, '인원제한':limitation_list, 'URL':url_list})
 
 
 #%%
