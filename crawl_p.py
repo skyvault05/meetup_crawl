@@ -169,15 +169,19 @@ phone_selector ="#hostInfo > li.host_phone"
 
 #%%
 #csv파일이 존재하는지 확인
-'''
-if op.path.exists(os.getcwd + "/data/data.csv"):
-    pd.read(os.getcwd() + '/data/data.csv')
-else:
 
-'''  
+if os.path.exists(os.getcwd() + "/data/data.csv"):
+    old_data = pd.read_csv(os.getcwd() + '/data/data.csv', index_col=0)
+else:
+    os.mkdir(os.getcwd() + '/data/')
+    df = pd.DataFrame(columns=['이름', '연락처', '이메일', '제목', '장소', '시간', '인원제한', 'URL'])
+    df.to_csv(os.getcwd() + '/data/data.csv')
+    old_data = pd.read_csv(os.getcwd() + '/data/data.csv', index_col=0)
+
+
     
 
-
+#%%
 name_list = []
 limitation_list = []
 place_list = []
@@ -229,9 +233,15 @@ for i in target_URL:
 
 
 #%%
+#데이터 추가
+new_data = pd.DataFrame({'이름':name_list, '연락처':phone_list, '이메일':email_list, '제목':title_list, '장소':place_list, '시간':date_list, '인원제한':limitation_list, 'URL':url_list})
+result_data = old_data.append(new_data, ignore_index=True)
 
-data = pd.DataFrame({'이름':name_list, '연락처':phone_list, '이메일':email_list, '제목':title_list, '장소':date_list, '시간':date_list, '인원제한':limitation_list, 'URL':url_list})
+#중복항목 제거
+result_data.drop_duplicates(subset='URL', inplace=True)
 
+#파일로 내보내기
+result_data.to_csv(os.getcwd() + '/data/data.csv')
 
 #%%
 
