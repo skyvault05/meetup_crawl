@@ -135,7 +135,11 @@ def getURL():
 #%%
 #target_URL
 #driver.set_script_timeout(10)
-target_URL = getURL()
+epoch = 2
+for i in range(2):
+    target_URL = target_URL + getURL()
+    driver.find_element_by_css_selector('#content > div > section.event_main_area > div.pagination_wrap > div > a.btn_next')
+
 #target_URL
 
 
@@ -144,6 +148,7 @@ target_URL = getURL()
 cs = []
 for n in target_URL:
     cs.append(n.find("/cs/"))
+
     
 del target_URL[cs.index(0)]
 target_URL
@@ -165,6 +170,14 @@ name_selector ="#hostInfo > li.host_name > a"
 email_selector = "#hostInfo > li.host_mail"
 #강연자 전화번호
 phone_selector ="#hostInfo > li.host_phone"
+
+#content > div.content_wrapping.max_width_area > section.event_summary > div.right_area > ul > li:nth-child(3) > p > span.total > span
+
+#target_soup.select('.host_mail')[0].text
+
+
+
+
 
 
 #%%
@@ -194,41 +207,73 @@ for i in target_URL:
     
     #타겟 URL지정해서 get
     driver.get(base_URL+i)
-    url_list.append(base_URL+i)
+    time.sleep(0.5)
+    
 
-
-    #get 타겟 페이지
+    #soup 타겟 페이지
     target_html = driver.page_source
     target_soup = BeautifulSoup(target_html, 'html.parser')
     #target_soup
 
-    title_selected = target_soup.select(title_selector) 
-    title_list.append(title_selected[0].text)
-    print(title_selected[0].text)
+    #soup에서 요소들 추출해서 list로 저장
+    url_list.append(base_URL+i)
+
+    title_selected = target_soup.select(title_selector)
+    if 0 < len(title_selected) :
+        title_list.append(title_selected[0].text[21:-16])
+        print(title_selected[0].text[21:-16])
+    else:
+        title_list.append('no_title')
+        print('no_title')
+
 
     date_selected = target_soup.select(date_selector)
-    date_list.append(date_selected[0].text)
-    print(date_selected[0].text)
+    if 0 < len(date_selected):
+        date_list.append(date_selected[0].text)
+        print(date_selected[0].text)
+    else:
+        date_list.append('no_date')
+        print('no_date')
 
     place_selected = target_soup.select(place_selector)
-    print(place_selected[0].text)
-    place_list.append(place_selected[0].text)
+    if 0 < len(place_selected):
+        place_list.append(place_selected[0].text)
+        print(place_selected[0].text)
+    else:
+        place_list.append('no_place')
+        print('no_place')
 
     limitation_selected = target_soup.select(limitation_selector)
-    limitation_list.append(limitation_selected[0].text)
-    print(limitation_selected[0].text)
+    if 0 < len(limitation_selected):
+        limitation_list.append(limitation_selected[0].text)
+        print(limitation_selected[0].text)
+    else: 
+       limitation_list.append('no_limitation')
+       print('no_limitation')
 
     name_selected = target_soup.select(name_selector)
-    name_list.append(name_selected[0].text)
-    print(name_selected[0].text)
+    if 0 < len(name_selected):
+        name_list.append(name_selected[0].text)
+        print(name_selected[0].text)
+    else:
+        name_list.append('no_name')
+        print('no_name')
 
     email_selected = target_soup.select(email_selector)
-    email_list.append(email_selected[0].text)
-    print(email_selected[0].text)
+    if 0 < len(email_selected):
+        email_list.append(email_selected[0].text)
+        print(email_selected[0].text)
+    else:
+        email_list.append('no_email')
+        print('no_email')
 
     phone_selected = target_soup.select(phone_selector)
-    phone_list.append(phone_selected[0].text)
-    print(phone_selected[0].text)
+    if 0 < len(phone_selected):
+        phone_list.append(phone_selected[0].text)
+        print(phone_selected[0].text)
+    else:
+        phone_list.append('no_phone')
+        print('no_phone')
 
 
 
@@ -244,7 +289,17 @@ result_data.drop_duplicates(subset='URL', inplace=True)
 result_data.to_csv(os.getcwd() + '/data/data.csv')
 
 #%%
+driver.quit()
 
 
 
 
+#%%
+print('name:' , len(name_list))
+print('phone:', len(phone_list))
+print('email:', len(email_list))
+print('title:', len(title_list))
+print('place:', len(place_list))
+print('date:', len(date_list))
+print('limit:', len(limitation_list))
+print('URL:', len(url_list))
