@@ -13,16 +13,15 @@ import time
 
 #os.chdir('/Users/hj/dev/meetup_crawl')
 #os.getcwd()
-print(os.getcwd() + '/enviroments/chromedriver')
-
-#%% [markdown]
-# # 구글 드라이버 실행
+print(os.getcwd())
 
 #%%
+#phantomJS 실행
 driver = webdriver.PhantomJS('/Users/hj/dev/meetup_crawl/enviroments/phantomjs-2.1.1-macosx/bin/phantomjs')
 
 
 #%%
+#페이지 로드 대기시간 설정
 driver.implicitly_wait(5)#웹 자원 로드를 위해 5초까지 기다림.
 driver.set_script_timeout(5)
 
@@ -32,16 +31,6 @@ driver.set_script_timeout(5)
 base_URL = 'https://www.onoffmix.com' #온오프믹스
 driver.get(base_URL+'/account/login') #get 로그인 페이지
 
-#%% [markdown]
-# try:
-#     element1 = WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.CLASS_NAME, 'btn_submit'))
-#     )
-#     print(element1)
-# except:
-#     print(2)
-#     pass
-
 #%%
 #로그인
 driver.find_element_by_class_name('email').send_keys('kimzombie@hotmail.com')
@@ -49,48 +38,22 @@ driver.find_element_by_class_name('password').send_keys('asdf65851242!@')
 
 driver.find_element_by_class_name('btn_submit').click()
 
-#%% [markdown]
-# #로그인 완료될때까지 기다리는 구문 필요 or css찾기
-# try:
-#     element2 = WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.ID, "header"))
-#     )
-#     print(element2)
-# except:
-#     print(2)
-#     pass
-#     
-# #finally:
+try:
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, "user_name")))
+except:
+    print('error')
 
 #%%
-time.sleep(1)
+#time.sleep(1)
+
+#교육 페이지로 이동
 driver.get(base_URL+'/event/main/?c=085')
-#driver.get(base_URL+'/event/main/?c=085')
-
-#%% [markdown]
-# # <로그인 완료>
-
-#%%
-#menu_selector ='#header > div.header_bottom > div:nth-child(1) > div > div > button'
-#driver.find_element_by_css_selector(menu_selector).click()
-
-#driver.get(base_URL+'/event/main/?c=085')
 
 #최근순으로 이동
 recent_selector = '#content > div > section.event_main_area > div.title_bar > ul.sort_menu > li:nth-child(2) > a'
 driver.find_element_by_css_selector(recent_selector).click()
 
-
-#%%
-#baseURL
-base_URL = 'https://www.onoffmix.com' #온오프믹스
-#get 교육 페이지
-'''list_URL = base_URL + '/event/main/?c=085' #모임 리스트
-driver.get(list_URL)'''
-
-#최근순으로 이동
-recent_selector = '#content > div > section.event_main_area > div.title_bar > ul.sort_menu > li:nth-child(2) > a'
-driver.find_element_by_css_selector(recent_selector).click()
 
 #%% [markdown]
 # #페이지이동
@@ -108,39 +71,56 @@ driver.find_element_by_css_selector(recent_selector).click()
 # '#content > div > section.event_main_area > div.pagination_wrap > div > a.btn_next'
 
 #%%
-#페이지 추출, URL추출
-target_URL = []
+#각 교육 상세 페이지 URL 추출 함수 지정
 def getURL():
+    temp_URL = []
     move = ['3', '4', '5', '6'] # 각 selector 선택을 위한 변수
     for v in move:
-        time.sleep(1)
+        #time.sleep(1)
+
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '#content > div > section.event_main_area > div.pagination_wrap > div > a:nth-child('+v+')')))
+            #print(v)
+        except:
+            print('error')
+
         html = driver.page_source
         list_soup = BeautifulSoup(html, 'html.parser')
         list_selector = '#content > div > section.event_main_area > ul > li > article > a'
         selected = list_soup.select(list_selector)
         #print(1)
         #print(selected)
+        #print(list_soup.select(list_selector))
     
         #각 타겟 페이지 URL추출
         for i in selected:
-            target_URL.append(i.get("href"))
-            #print(target_URL)
+            temp_URL.append(i.get("href"))
+            #print(i.get("href"))
 
+        
+        
         #다음페이지로 이동
         driver.find_element_by_css_selector('#content > div > section.event_main_area > div.pagination_wrap > div > a:nth-child('+v+')').click()
         #print(v)
-    return target_URL
+    return temp_URL
 
 
 #%%
-#target_URL
-#driver.set_script_timeout(10)
+#각 교육 상세 페이지 URL 추출
+target_URL = []
 epoch = 2
-for i in range(2):
+for i in range(epoch):
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, '#content > div > section.event_main_area > div.pagination_wrap > div > a.btn_next')))
+    except:
+        print('error')
     target_URL = target_URL + getURL()
-    driver.find_element_by_css_selector('#content > div > section.event_main_area > div.pagination_wrap > div > a.btn_next')
+    
+    driver.find_element_by_css_selector('#content > div > section.event_main_area > div.pagination_wrap > div > a.btn_next').click()
 
-#target_URL
+#len(target_URL)
 
 
 #%%
@@ -171,18 +151,9 @@ email_selector = "#hostInfo > li.host_mail"
 #강연자 전화번호
 phone_selector ="#hostInfo > li.host_phone"
 
-#content > div.content_wrapping.max_width_area > section.event_summary > div.right_area > ul > li:nth-child(3) > p > span.total > span
-
-#target_soup.select('.host_mail')[0].text
-
-
-
-
-
 
 #%%
-#csv파일이 존재하는지 확인
-
+#csv파일이 존재하는지 확인하고 없으면 폴더 및 csv파일 생성
 if os.path.exists(os.getcwd() + "/data/data.csv"):
     old_data = pd.read_csv(os.getcwd() + '/data/data.csv', index_col=0)
 else:
