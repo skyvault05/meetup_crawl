@@ -17,8 +17,10 @@ print(os.getcwd())
 
 #%%
 #phantomJS 실행
-#driver = webdriver.PhantomJS('/Users/hj/dev/meetup_crawl/enviroments/phantomjs-2.1.1-macosx/bin/phantomjs')
-driver = webdriver.Chrome('./enviroments/chromedriver')
+driver = webdriver.PhantomJS('/Users/hj/dev/meetup_crawl/enviroments/phantomjs-2.1.1-macosx/bin/phantomjs')
+
+#코드 확인용 크롬 드라이버
+#driver = webdriver.Chrome('./enviroments/chromedriver')
 
 #%%
 #페이지 로드 대기시간 설정
@@ -100,7 +102,7 @@ phone_selector = 'body > div.leftside-info.white > div.m-t5 > div:nth-child(2) >
 
 #%%
 #csv파일이 존재하는지 확인하고 없으면 폴더 및 csv파일 생성
-if os.path.exists("./data/eventus_data.csv"):
+if os.path.exists('./data/eventus_data.csv'):
     old_data = pd.read_csv('./data/eventus_data.csv', index_col=0)
 else:
     if not os.path.exists('./data'):
@@ -108,7 +110,7 @@ else:
     
     df = pd.DataFrame(columns=['이름', '연락처', '이메일', '제목', '장소', '시간', '인원제한', 'URL'])
     df.to_csv('./data/eventus_data.csv')
-    old_data = pd.read_csv('/.data/eventus_data.csv', index_col=0)
+    old_data = pd.read_csv('./data/eventus_data.csv', index_col=0)
 
 
     

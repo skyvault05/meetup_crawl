@@ -109,7 +109,7 @@ def getURL():
 #%%
 #각 교육 상세 페이지 URL 추출
 target_URL = []
-epoch = 2
+epoch = 1
 for i in range(epoch):
     try:
         WebDriverWait(driver, 10).until(
@@ -154,14 +154,14 @@ phone_selector ="#hostInfo > li.host_phone"
 
 #%%
 #csv파일이 존재하는지 확인하고 없으면 폴더 및 csv파일 생성
-if os.path.exists("./data/onoffmix_data.csv"):
+if os.path.exists('./data/onoffmix_data.csv'):
     old_data = pd.read_csv('./data/onoffmix_data.csv', index_col=0)
 else:
     if not os.path.exists('./data'):
         os.mkdir('./data/')
     
     df = pd.DataFrame(columns=['이름', '연락처', '이메일', '제목', '장소', '시간', '인원제한', 'URL'])
-    df.to_csv('/.data/onoffmix_data.csv')
+    df.to_csv('./data/onoffmix_data.csv')
     old_data = pd.read_csv('./data/onoffmix_data.csv', index_col=0)
 
 
