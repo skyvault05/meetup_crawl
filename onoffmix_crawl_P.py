@@ -154,13 +154,15 @@ phone_selector ="#hostInfo > li.host_phone"
 
 #%%
 #csv파일이 존재하는지 확인하고 없으면 폴더 및 csv파일 생성
-if os.path.exists(os.getcwd() + "/data/data.csv"):
-    old_data = pd.read_csv(os.getcwd() + '/data/data.csv', index_col=0)
+if os.path.exists("./data/onoffmix_data.csv"):
+    old_data = pd.read_csv('./data/onoffmix_data.csv', index_col=0)
 else:
-    os.mkdir(os.getcwd() + '/data/')
+    if not os.path.exists('./data'):
+        os.mkdir('./data/')
+    
     df = pd.DataFrame(columns=['이름', '연락처', '이메일', '제목', '장소', '시간', '인원제한', 'URL'])
-    df.to_csv(os.getcwd() + '/data/data.csv')
-    old_data = pd.read_csv(os.getcwd() + '/data/data.csv', index_col=0)
+    df.to_csv('/.data/onoffmix_data.csv')
+    old_data = pd.read_csv('./data/onoffmix_data.csv', index_col=0)
 
 
     
@@ -178,7 +180,7 @@ for i in target_URL:
     
     #타겟 URL지정해서 get
     driver.get(base_URL+i)
-    time.sleep(0.5)
+    #time.sleep(0.5)
     
 
     #soup 타겟 페이지
@@ -257,7 +259,8 @@ result_data = old_data.append(new_data, ignore_index=True)
 result_data.drop_duplicates(subset='URL', inplace=True)
 
 #파일로 내보내기
-result_data.to_csv(os.getcwd() + '/data/data.csv')
+result_data.to_csv(os.getcwd() + '/data/onoffmix_data.csv')
+print('onoffmix_data.csv')
 
 #%%
 driver.quit()
