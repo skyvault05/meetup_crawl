@@ -17,7 +17,7 @@ print(os.getcwd())
 
 #%%
 #phantomJS 실행
-driver = webdriver.PhantomJS('/Users/hj/dev/meetup_crawl/enviroments/phantomjs-2.1.1-macosx/bin/phantomjs')
+driver = webdriver.PhantomJS('./enviroments/phantomjs-2.1.1-macosx/bin/phantomjs')
 
 #코드 확인용 크롬 드라이버
 #driver = webdriver.Chrome('./enviroments/chromedriver')
