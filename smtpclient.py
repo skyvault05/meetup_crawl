@@ -1,8 +1,8 @@
 #%%
 import smtplib
 
-gmail_user = 'kimzombie@gmail.com'
-gmail_password = 'Re2600fb#$'
+gmail_user = '@gmail.com'
+gmail_password = ''
 
 
 sent_from = "@gmail.com"
