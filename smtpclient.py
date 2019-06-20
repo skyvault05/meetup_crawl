@@ -5,8 +5,8 @@ gmail_user = 'kimzombie@gmail.com'
 gmail_password = 'Re2600fb#$'
 
 
-sent_from = "kimzombie@gmail.com"
-to = ["kimzombie@gmail.com"]
+sent_from = "@gmail.com"
+to = ["@gmail.com"]
 subject = "smtp test"
 body = "hey, waht's up"
 
